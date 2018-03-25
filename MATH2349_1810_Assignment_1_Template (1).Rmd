@@ -33,7 +33,10 @@ library(foreign) # Useful for importing SPSS, SAS, STATA etc. data files
 library(rvest) # Useful for scraping HTML data
 library(knitr) # Useful for creating nice tables
 library(data.table)
-
+library(tm) #Text Manager
+library(XML)
+library(RCurl)
+library(stringr)
 ```
 
 
@@ -96,16 +99,46 @@ dim(abaloneDS)
 * 4177 Instances
 * 9 Attributes
 
+```{r}
+# Useful?
+dplyr::tbl_df(abaloneDS)
+```
+
+
+
 ### The attributes are un-named
 
 ```{r, importing the information data, include=TRUE}
 # Creating a variable for the URL string
 abaloneDataDescURL <- 'https://archive.ics.uci.edu/ml/machine-learning-databases/abalone/abalone.names'
-# Use data.table package
-abaloneDSDesc <- fread(abaloneDataDescURL)
+# Create a new string variable
+abaloneDSDesc <- readLines(abaloneDataDescURL)
+# Check the String
+head(abaloneDSDesc, n=15)
+# Remove "\t"
+
+abaloneDSDesc <- strsplit(abaloneDSDesc, "\n")
+abaloneDSDesc
+abaloneDSDesc <- strsplit(abaloneDSDesc, "\r")
+
+str = str_replace(abaloneDSDesc, "\t", "")
+str
+
+
 ```
 
 * This does NOT work - need to READ
+
+```{r}
+txtTest <- pdf_text("30119561_Releases_Notes_SparkControl_V1_8.pdf")
+txtTest
+txtTest2 <- strsplit(txtTest, "\n")
+txtTest2
+head(txtTest2[[5]])
+txtTest2[[5]]
+
+```
+
 
 ```{r}
 
