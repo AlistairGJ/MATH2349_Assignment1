@@ -171,6 +171,8 @@ summary(abaloneDS)
 
 ## Note the above chunk - "Rings + 1.5 gives the age in years" - add this as a column
 
+## Subsetting I
+
 ```{r, include=TRUE}
 # Subset the first 10 observations, including all variables
 abaloneSS <- abaloneDS[1:10, ]
