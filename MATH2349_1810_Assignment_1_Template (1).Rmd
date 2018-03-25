@@ -104,28 +104,37 @@ dim(abaloneDS)
 dplyr::tbl_df(abaloneDS)
 ```
 
-```{r}
+```{r, include=TRUE}
 # Creating a variable for the URL string
 abaloneDataDescURL <- 'https://archive.ics.uci.edu/ml/machine-learning-databases/abalone/abalone.names'
 ```
 
-```{r}
+```{r, include=TRUE}
 # Create a new string variable
 abaloneDSDesc <- readLines(abaloneDataDescURL)
 ```
 
-```{r, importing the information data, include=TRUE}
-
+```{r, include=TRUE}
 # Check the String
-head(abaloneDSDesc, n=15)
+head(abaloneDSDesc, n=10)
+```
+
+```{r, importing the information data, include=TRUE}
 # Remove / Replace "\t"
 abaloneDSDesc = str_replace(abaloneDSDesc, "\t", "")
 # Check the String
-head(abaloneDSDesc, n=15)
+head(abaloneDSDesc, n=10)
+```
+
+```{r, include=TRUE}
 # Save this in WD for info
 write.table(abaloneDSDesc, "AbaloneDescription.txt", sep="\t")
+```
+
+```{r, include=TRUE}
 #Search for Attribute information
-str_detect(abaloneDSDesc, "Attribute")
+test <- str_detect(abaloneDSDesc, "Attribute")
+which(test == TRUE)
 ```
 
 ```{r}
@@ -133,6 +142,7 @@ str_detect(abaloneDSDesc, "Attribute")
 str_view(abaloneDSDesc[78:109], "Attribute")
 str_view(abaloneDSDesc[86:99], "Attribute")
 ```
+
 
 
 * This does NOT work - need to READ
