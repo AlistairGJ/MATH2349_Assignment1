@@ -169,6 +169,13 @@ str(abaloneDS)
 abaloneDS$Sex <- factor(abaloneDS$Sex)
 ```
 
+```{r}
+# Summary
+summary(abaloneDS)
+```
+
+## Note the above chunk - "Rings + 1.5 gives the age in years" - add this as a column
+
 
 
 Explain everything that you do in this step using regular text outside the R chunks. You may use bulleted lists like this:
