@@ -104,15 +104,18 @@ dim(abaloneDS)
 dplyr::tbl_df(abaloneDS)
 ```
 
-
-
-### The attributes are un-named
-
-```{r, importing the information data, include=TRUE}
+```{r}
 # Creating a variable for the URL string
 abaloneDataDescURL <- 'https://archive.ics.uci.edu/ml/machine-learning-databases/abalone/abalone.names'
+```
+
+```{r}
 # Create a new string variable
 abaloneDSDesc <- readLines(abaloneDataDescURL)
+```
+
+```{r, importing the information data, include=TRUE}
+
 # Check the String
 head(abaloneDSDesc, n=15)
 # Remove / Replace "\t"
@@ -120,8 +123,17 @@ abaloneDSDesc = str_replace(abaloneDSDesc, "\t", "")
 # Check the String
 head(abaloneDSDesc, n=15)
 # Save this in WD for info
-write.table(abaloneDSDesc, "AbaloneDescription.txt")
+write.table(abaloneDSDesc, "AbaloneDescription.txt", sep="\t")
+#Search for Attribute information
+str_detect(abaloneDSDesc, "Attribute")
 ```
+
+```{r}
+# Substring
+str_view(abaloneDSDesc[78:109], "Attribute")
+str_view(abaloneDSDesc[86:99], "Attribute")
+```
+
 
 * This does NOT work - need to READ
 
@@ -216,3 +228,12 @@ This report must be uploaded to Turnitin as a PDF with your code chunks showing.
 
 <br>
 <br>
+
+
+```{r}
+# Substring
+test <- str_view(abaloneDSDesc, "Attribute")
+test
+
+```
+
