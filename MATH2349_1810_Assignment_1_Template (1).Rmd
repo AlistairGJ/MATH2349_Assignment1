@@ -1,10 +1,22 @@
 ---
 title: "MATH2349 Semester 1, 2018"
-author: "Student name and number comes here"
+author: "Alistair Grevis-James s3644119"
 subtitle: Assignment 1
 output: 
   html_notebook: default
 ---
+
+```{r}
+#knitr::opts_current$get()$label
+#opts_chunk$set(label_list=TRUE)
+#opts_current$get()$label
+```
+
+
+# Statistical Evaluation of Mice Protein Expression Data Set
+
+### Executive Summary
+The data (‘Mice Protein Expression Data Set’) was collected online (UCI Machine Learning), consisting of 1080 observations over 82 variables. These data consisted of continuous numerical protein expression data, and categorical data including mouse identification and variable exposure. After data exploration, visualization and data preprocessing, two modes of statistical analysis were employed. The first was linear regression analysis. Prior to fitting any regression, a scatter plot assessing the bi variate relationship between the relevant proteins was inspected. In the three relationships considered, the scatter plots demonstrated evidence of a positive linear relationship. 
 
 ## Setup
 
@@ -16,12 +28,11 @@ Install and load the necessary packages to reproduce the report here:
 
 # Here are some example packages, you may add others if you require  
 
-
 library(readr) # Useful for importing data
 library(foreign) # Useful for importing SPSS, SAS, STATA etc. data files
 library(rvest) # Useful for scraping HTML data
 library(knitr) # Useful for creating nice tables
-
+library(data.table)
 
 ```
 
@@ -55,9 +66,48 @@ Read/Import the data into R, then save it as a data frame. You can use Base R fu
 
 ```{r}
 
-# This is an R chunk for importing the data. Provide your R codes here:
+```
 
+### Talk about data set
 
+### Step 1 - import the data via URL
+```{r, importing the data, include=TRUE}
+# Creating a variable for the URL string
+abaloneDataURL <- 'https://archive.ics.uci.edu/ml/machine-learning-databases/abalone/abalone.data'
+# Use data.table package
+abaloneDS <- fread(abaloneDataURL)
+```
+
+```{r, checking the first 5 instances, include=TRUE}
+# Checking the first 5 instances (abaloneDS header also displayed)
+head(abaloneDS, n = 5)
+```
+
+```{r, checking the last 5 instances, include=TRUE}
+# Checking the last 5 instances (abaloneDS header also displayed)
+tail(abaloneDS, n = 5)
+```
+
+```{r, checking the DS dimensions, include=TRUE}
+# Checking the size
+dim(abaloneDS)
+```
+
+* 4177 Instances
+* 9 Attributes
+
+### The attributes are un-named
+
+```{r, importing the information data, include=TRUE}
+# Creating a variable for the URL string
+abaloneDataDescURL <- 'https://archive.ics.uci.edu/ml/machine-learning-databases/abalone/abalone.names'
+# Use data.table package
+abaloneDSDesc <- fread(abaloneDataDescURL)
+```
+
+* This does NOT work - need to READ
+
+```{r}
 
 ```
 
@@ -88,11 +138,7 @@ Provide your R codes with outputs and explain everything that you do in this ste
 
 
 ```{r}
-
 # This is a chunk where you inspect the types of variables, data structures, check the attributes in the data.
-
-
-
 ```
 
 ## Subsetting I
