@@ -1,79 +1,56 @@
 ---
-title: "MATH2349 Semester 1, 2018"
+title: "MATH2349 Data Preprocessing Sem. 1, 2018"
+subtitle: "Assignment 1 - The Abalone Data Set"
 author: "Alistair Grevis-James s3644119"
-subtitle: Assignment 1
 output: 
   html_notebook: default
 ---
-
-```{r}
-#knitr::opts_current$get()$label
-#opts_chunk$set(label_list=TRUE)
-#opts_current$get()$label
-```
-
-
-# Statistical Evaluation of Mice Protein Expression Data Set
+<style> body { text-align: justify} </style>
 
 ### Executive Summary
-The data (‘Mice Protein Expression Data Set’) was collected online (UCI Machine Learning), consisting of 1080 observations over 82 variables. These data consisted of continuous numerical protein expression data, and categorical data including mouse identification and variable exposure. After data exploration, visualization and data preprocessing, two modes of statistical analysis were employed. The first was linear regression analysis. Prior to fitting any regression, a scatter plot assessing the bi variate relationship between the relevant proteins was inspected. In the three relationships considered, the scatter plots demonstrated evidence of a positive linear relationship. 
+The data (‘Abalone Data Set’) was collected online (UCI Machine Learning), consisting of 4177  observations over 82 variables. These data consisted of continuous numerical protein expression data, and categorical data including mouse identification and variable exposure. After data exploration, visualization and data preprocessing, two modes of statistical analysis were employed. The first was linear regression analysis. Prior to fitting any regression, a scatter plot assessing the bi variate relationship between the relevant proteins was inspected. In the three relationships considered, the scatter plots demonstrated evidence of a positive linear relationship. 
 
-## Setup
+Data Set Characteristics  | Number of Instances  | Number of Attributes | Attribute Characteristics | 
+------------------        | ------------------   |  ------------------  | ------------------        |  
+Multivariate              |  4177                | 9                    | Categorical, Integer, Real|  
 
-Install and load the necessary packages to reproduce the report here:
+### Setup
 
-```{r, echo = TRUE, warnings = FALSE}
+The following packages were employed during this task.
 
-# This is a chunk where you can load the necessary packages required to reproduce the report 
-
-# Here are some example packages, you may add others if you require  
-
+```{r, warnings = FALSE, include=TRUE}
 library(readr) # Useful for importing data
-library(foreign) # Useful for importing SPSS, SAS, STATA etc. data files
-library(rvest) # Useful for scraping HTML data
 library(knitr) # Useful for creating nice tables
 library(data.table)
 library(tm) #Text Manager
-library(XML)
-library(RCurl)
-library(stringr)
+library(stringr) #String functions
 ```
 
-
-
 ## Data Description
+These data come from the study performd by Warwick J Nash, Tracy L Sellers, Simon R Talbot, Andrew J Cawthorn and Wes B Ford (1994):
 
-Locate an open source of data from the web. This can be a tabular, spreadsheet data (i.e., .txt, .csv, .xls, .xlsx files), data sets from other statistical software (i.e., SPSS, SAS, Stata etc.), or you can scrape HTML table data.
+> The Population Biology of Abalone (_Haliotis_ species) in Tasmania. I. Blacklip Abalone (_H. rubra_) 
+> from the North Coast and Islands of Bass Strait, Sea Fisheries Division, Technical Report No. 48
 
-Some sources for open data are provided below, but I encourage you to find others:
+As is outlined below, the data set can be surmised as follows
 
-* [http://www.abs.gov.au/](http://www.abs.gov.au/)
-
-* [https://www.data.vic.gov.au/](https://www.data.vic.gov.au/) 	
-
-* [http://www.bom.gov.au/](http://www.bom.gov.au/)
-
-* [https://www.kaggle.com](https://www.kaggle.com) 
-
-As a minimum, your data set should include:
-
-* one numeric variable.
-* one qualitative (categorical) variable.
-
-There is no limit on the number of observations and number of variables. But keep in mind that when you have a very large data set, it will increase your reading time. **A clear description of data and its source should be provided in this section.** 
+Attribute       |	Data Type  |	Units	| Description                     |
+----	          |	---------	 | -----  |	-----------                     |
+Sex		          | nominal		 | N/A    |   M, F, and I (infant)          |
+Length		      | continuous | mm	    |  Longest shell measurement      |
+Diameter	      | continuous | mm	    | perpendicular to length         |
+Height		      | continuous | mm	    | with meat in shell              |
+Whole weight	  | continuous | grams	| whole abalone                   |
+Shucked weight	| continuous | grams	| weight of meat                  |
+Viscera weight  |	continuous | grams	| gut weight (after bleeding)     |
+Shell weight	  | continuous | grams	| after being dried               |
+Rings		        | integer		 | N/A    | +1.5 gives the age in years     |
 
 
 ## Read/Import Data
 
-Read/Import the data into R, then save it as a data frame. You can use Base R functions or readr, xlsx, readxl, foreign, rvest packages for this purpose. You must also provide the R codes with outputs (i.e. `head()` of the data set) that you used to import/read/scrape the data set. You can provide the R codes with outputs using R chunks like this:
+These data were directly imported from the relevant URL into the RStudio IDE.
 
-```{r}
-
-```
-
-### Talk about data set
-
-### Step 1 - import the data via URL
 ```{r, importing the data, include=TRUE}
 # Creating a variable for the URL string
 abaloneDataURL <- 'https://archive.ics.uci.edu/ml/machine-learning-databases/abalone/abalone.data'
@@ -81,23 +58,27 @@ abaloneDataURL <- 'https://archive.ics.uci.edu/ml/machine-learning-databases/aba
 abaloneDS <- fread(abaloneDataURL)
 ```
 
-```{r, checking the first 5 instances, include=TRUE}
-# Checking the first 5 instances (abaloneDS header also displayed)
+* These native data were checked for the first five instances in the data set using `head(x,n=5)`, followed by the last five instances using `tail(x,n=5)`.
+* The dimensions of the data set were checked using `dim(x)`.
+
+```{r, include=TRUE}
 head(abaloneDS, n = 5)
 ```
-
-```{r, checking the last 5 instances, include=TRUE}
-# Checking the last 5 instances (abaloneDS header also displayed)
+```{r, include=TRUE}
 tail(abaloneDS, n = 5)
 ```
-
-```{r, checking the DS dimensions, include=TRUE}
+```{r, include=TRUE}
 # Checking the size
 dim(abaloneDS)
 ```
 
-* 4177 Instances
-* 9 Attributes
+Note that the attributes do not contain descriptive information. In order to obtain this, we will check the text information from the URL below.
+
+* Create a String variable from the content located at the URL
+* Check the first 10 lines of the String
+* Clean data
+* Save this data into the working directory (good practice)
+* Locate the term "Attribute"
 
 ```{r, include=TRUE}
 # Creating a variable for the URL string
@@ -115,7 +96,7 @@ head(abaloneDSDesc, n=10)
 ```
 
 ```{r, importing the information data, include=TRUE}
-# Remove / Replace "\t"
+# Remove "\t"
 abaloneDSDesc = str_replace(abaloneDSDesc, "\t", "")
 # Check the String
 head(abaloneDSDesc, n=10)
@@ -135,8 +116,14 @@ which(test == TRUE)
 ```{r, include=TRUE}
 # Substring
 str_view(abaloneDSDesc[78:109], "Attribute")
+```
+
+```{r, include=TRUE}
+# Substring
 str_view(abaloneDSDesc[86:98], "Attribute")
 ```
+
+We can now construct a header for the dataset.
 
 ```{r, include=TRUE}
 # We know from dim, have 9 attributes
@@ -169,9 +156,9 @@ abaloneDS$Sex <- factor(abaloneDS$Sex)
 summary(abaloneDS)
 ```
 
-## Note the above chunk - "Rings + 1.5 gives the age in years" - add this as a column
-
 ## Subsetting I
+
+Subset the data frame using first 10 observations (include all variables). Then convert it to a matrix. Provide the R codes with outputs and explain everything that you do in this step.
 
 ```{r, include=TRUE}
 # Subset the first 10 observations, including all variables
@@ -198,87 +185,27 @@ abaloneSSmatrix <- as.matrix(abaloneSS)
 class(abaloneSSmatrix)
 ```
 
-Explain everything that you do in this step using regular text outside the R chunks. You may use bulleted lists like this:
-
-
-Here is an example of bulleted list:
-
-* Bullet 1
-* Bullet 2
-* ....
-
-
-
-## Inspect and Understand
-
-
-Inspect the data frame and variables using R functions. As a minimum, you should:
-
-* check the dimensions of the data frame.
-* check the data types (i.e., character, numeric, integer, factor, and logical) of the variables in the data set.
-* check the levels of factor variables, rename/rearrange them if required.
-* check the column names in the data frame, rename them if required.
-
-
-Provide your R codes with outputs and explain everything that you do in this step.
-
-
-```{r}
-# This is a chunk where you inspect the types of variables, data structures, check the attributes in the data.
-```
-
-## Subsetting I
-
-Subset the data frame using first 10 observations (include all variables). Then convert it to a matrix. Provide the R codes with outputs and explain everything that you do in this step. 
-
-
-
-```{r}
-
-# This is a chunk to subset your data and convert it to a matrix 
-
-
-```
-
-If you get an error, you won't be able to preview the notebook. To avoid this, you may use `eval = FALSE` option inside the R chunk like this:
-
-```{r, eval=FALSE}
-
-# With eval = FALSE option knitr won't run the R code but will display your codes on the notebook. 
-
-
-```
-
-Do not forget to explain why you got this error.
-
 ## Subsetting II
-
 
 Subset the data frame including only first and the last variable in the data set, save it as an R object file (.RData). Provide the R codes with outputs and explain everything that you do in this step. 
 
-```{r}
-
-# This is a chunk to subset your data and convert it to an R object file 
-
-
+```{r, include=TRUE}
+# Subset the first 10 observations, including all variables
+abaloneSStwo <- abaloneDS[c(1,4177), ]
 ```
 
+```{r, include=TRUE}
+# Checking the SS pt. 1
+dplyr::tbl_df(abaloneSStwo)
+```
 
-## IMPORTANT NOTE: 
+```{r, include=TRUE}
+# Checking the SS pt. 2
+str(abaloneSStwo)
+```
 
-This report must be uploaded to Turnitin as a PDF with your code chunks showing. The easiest way to achieve this is to Preview your notebook in HTML (by clicking Preview) → Open in Browser (Chrome) → Right click on the report in Chrome → Click Print and Select the Destination Option to Save as PDF. 
-
-
-**Feel free to DELETE the instructional text provided in the template.** If you have any questions regarding the assignment instructions and the R template, please post it on [Slack](https://math2349.slack.com) under the `#Assignment1` channel. 
-
-<br>
-<br>
-
-
-```{r}
-# Substring
-test <- str_view(abaloneDSDesc, "Attribute")
-test
-
+```{r, include=TRUE}
+# Convert SS to a matrix
+saveRDS(abaloneSStwo, "abalonePT2.rds")
 ```
 
