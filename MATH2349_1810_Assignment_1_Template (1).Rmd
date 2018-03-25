@@ -115,16 +115,12 @@ abaloneDataDescURL <- 'https://archive.ics.uci.edu/ml/machine-learning-databases
 abaloneDSDesc <- readLines(abaloneDataDescURL)
 # Check the String
 head(abaloneDSDesc, n=15)
-# Remove "\t"
-
-abaloneDSDesc <- strsplit(abaloneDSDesc, "\n")
-abaloneDSDesc
-abaloneDSDesc <- strsplit(abaloneDSDesc, "\r")
-
-str = str_replace(abaloneDSDesc, "\t", "")
-str
-
-
+# Remove / Replace "\t"
+abaloneDSDesc = str_replace(abaloneDSDesc, "\t", "")
+# Check the String
+head(abaloneDSDesc, n=15)
+# Save this in WD for info
+write.table(abaloneDSDesc, "AbaloneDescription.txt")
 ```
 
 * This does NOT work - need to READ
