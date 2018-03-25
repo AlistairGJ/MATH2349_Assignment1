@@ -145,24 +145,6 @@ str_view(abaloneDSDesc[86:99], "Attribute")
 
 
 
-* This does NOT work - need to READ
-
-```{r}
-txtTest <- pdf_text("30119561_Releases_Notes_SparkControl_V1_8.pdf")
-txtTest
-txtTest2 <- strsplit(txtTest, "\n")
-txtTest2
-head(txtTest2[[5]])
-txtTest2[[5]]
-
-```
-
-
-```{r}
-
-```
-
-
 Explain everything that you do in this step using regular text outside the R chunks. You may use bulleted lists like this:
 
 
