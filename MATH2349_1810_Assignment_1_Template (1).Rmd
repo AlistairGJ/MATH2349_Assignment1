@@ -140,7 +140,33 @@ which(test == TRUE)
 ```{r}
 # Substring
 str_view(abaloneDSDesc[78:109], "Attribute")
-str_view(abaloneDSDesc[86:99], "Attribute")
+str_view(abaloneDSDesc[86:98], "Attribute")
+```
+
+```{r}
+# We know from dim, have 9 attributes
+AbaloneHeader = c("Sex", "Length", "Diameter",
+                  "Height", "WholeWeight", "ShuckedWeight",
+                  "VisceraWeight", "ShellWeight", "Rings")
+```
+
+```{r}
+colnames(abaloneDS) <- AbaloneHeader
+```
+
+```{r}
+# Checking the first 5 instances (abaloneDS header also displayed)
+head(abaloneDS, n = 5)
+```
+
+```{r}
+# Checking the Data Types
+str(abaloneDS)
+```
+
+```{r}
+# Turn Sex into a factor rather than Char
+abaloneDS$Sex <- factor(abaloneDS$Sex)
 ```
 
 
