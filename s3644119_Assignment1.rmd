@@ -1,0 +1,215 @@
+---
+title: "MATH2349 Data Preprocessing Sem. 1, 2018"
+subtitle: "Assignment 1 - The Abalone Data Set"
+author: "Alistair Grevis-James s3644119"
+output: 
+  html_notebook: default
+---
+<style> body { text-align: justify} </style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Executive Summary
+The data (‘Abalone Data Set’) was collected online (UCI Machine Learning), consisting of 4177  observations over 82 variables. These data consisted of continuous numerical protein expression data, and categorical data including mouse identification and variable exposure. After data exploration, visualization and data preprocessing, two modes of statistical analysis were employed. The first was linear regression analysis. Prior to fitting any regression, a scatter plot assessing the bi variate relationship between the relevant proteins was inspected. In the three relationships considered, the scatter plots demonstrated evidence of a positive linear relationship. 
+
+Data Set Characteristics  | Number of Instances  | Number of Attributes | Attribute Characteristics | 
+------------------        | ------------------   |  ------------------  | ------------------        |  
+Multivariate              |  4177                | 9                    | Categorical, Integer, Real|  
+
+### Setup
+
+The following packages were employed during this task.
+
+```{r, warnings = FALSE, include=TRUE}
+library(readr) # Useful for importing data
+library(knitr) # Useful for creating nice tables
+library(data.table)
+library(tm) #Text Manager
+library(stringr) #String functions
+```
+
+## Data Description
+These data come from the study performd by Warwick J Nash, Tracy L Sellers, Simon R Talbot, Andrew J Cawthorn and Wes B Ford (1994):
+
+> The Population Biology of Abalone (_Haliotis_ species) in Tasmania. I. Blacklip Abalone (_H. rubra_) 
+> from the North Coast and Islands of Bass Strait, Sea Fisheries Division, Technical Report No. 48
+
+As is outlined below, the data set can be surmised as follows
+
+Attribute       |	Data Type  |	Units	| Description                     |
+----	          |	---------	 | -----  |	-----------                     |
+Sex		          | nominal		 | N/A    |   M, F, and I (infant)          |
+Length		      | continuous | mm	    |  Longest shell measurement      |
+Diameter	      | continuous | mm	    | perpendicular to length         |
+Height		      | continuous | mm	    | with meat in shell              |
+Whole weight	  | continuous | grams	| whole abalone                   |
+Shucked weight	| continuous | grams	| weight of meat                  |
+Viscera weight  |	continuous | grams	| gut weight (after bleeding)     |
+Shell weight	  | continuous | grams	| after being dried               |
+Rings		        | integer		 | N/A    | +1.5 gives the age in years     |
+
+
+## Read/Import Data
+
+These data were directly imported from the relevant URL into the RStudio IDE.
+
+```{r, importing the data, include=TRUE}
+# Creating a variable for the URL string
+abaloneDataURL <- 'https://archive.ics.uci.edu/ml/machine-learning-databases/abalone/abalone.data'
+# Use data.table package
+abaloneDS <- fread(abaloneDataURL)
+```
+
+* These native data were checked for the first five instances in the data set using `head(x,n=5)`, followed by the last five instances using `tail(x,n=5)`.
+* The dimensions of the data set were checked using `dim(x)`.
+
+```{r, include=TRUE}
+head(abaloneDS, n = 5)
+```
+```{r, include=TRUE}
+tail(abaloneDS, n = 5)
+```
+```{r, include=TRUE}
+# Checking the size
+dim(abaloneDS)
+```
+
+Note that the attributes do not contain descriptive information. In order to obtain this, we will check the text information from the URL below.
+
+* Create a String variable from the content located at the URL
+* Check the first 10 lines of the String
+* Clean data
+* Save this data into the working directory (good practice)
+* Locate the term "Attribute"
+
+```{r, include=TRUE}
+# Creating a variable for the URL string
+abaloneDataDescURL <- 'https://archive.ics.uci.edu/ml/machine-learning-databases/abalone/abalone.names'
+```
+
+```{r, include=TRUE}
+# Create a new string variable
+abaloneDSDesc <- readLines(abaloneDataDescURL)
+```
+
+```{r, include=TRUE}
+# Check the String
+head(abaloneDSDesc, n=10)
+```
+
+```{r, importing the information data, include=TRUE}
+# Remove "\t"
+abaloneDSDesc = str_replace(abaloneDSDesc, "\t", "")
+# Check the String
+head(abaloneDSDesc, n=10)
+```
+
+```{r, include=TRUE}
+# Save this in WD for info
+write.table(abaloneDSDesc, "AbaloneDescription.txt", sep="\t")
+```
+
+```{r, include=TRUE}
+#Search for Attribute information
+test <- str_detect(abaloneDSDesc, "Attribute")
+which(test == TRUE)
+```
+
+```{r, include=TRUE}
+# Substring
+str_view(abaloneDSDesc[78:109], "Attribute")
+```
+
+```{r, include=TRUE}
+# Substring
+str_view(abaloneDSDesc[86:98], "Attribute")
+```
+
+We can now construct a header for the dataset.
+
+```{r, include=TRUE}
+# We know from dim, have 9 attributes
+AbaloneHeader = c("Sex", "Length", "Diameter",
+                  "Height", "WholeWeight", "ShuckedWeight",
+                  "VisceraWeight", "ShellWeight", "Rings")
+```
+
+```{r, include=TRUE}
+colnames(abaloneDS) <- AbaloneHeader
+```
+
+```{r, include=TRUE}
+# Checking the first 5 instances (abaloneDS header also displayed)
+head(abaloneDS, n = 5)
+```
+
+```{r, include=TRUE}
+# Checking the Data Types
+str(abaloneDS)
+```
+
+```{r, include=TRUE}
+# Turn Sex into a factor rather than Char
+abaloneDS$Sex <- factor(abaloneDS$Sex)
+```
+
+```{r, include=TRUE}
+# Summary
+summary(abaloneDS)
+```
+
+## Subsetting I
+
+Subset the data frame using first 10 observations (include all variables). Then convert it to a matrix. Provide the R codes with outputs and explain everything that you do in this step.
+
+```{r, include=TRUE}
+# Subset the first 10 observations, including all variables
+abaloneSS <- abaloneDS[1:10, ]
+```
+
+```{r, include=TRUE}
+# Checking the SS pt. 1
+dplyr::tbl_df(abaloneSS)
+```
+
+```{r, include=TRUE, hold_position = TRUE}
+# Checking the SS pt. 2
+str(abaloneSS)
+```
+
+```{r, include=TRUE, hold_position = TRUE}
+# Convert SS to a matrix
+abaloneSSmatrix <- as.matrix(abaloneSS)
+```
+
+```{r, include=TRUE, hold_position = TRUE}
+# Checking the class
+class(abaloneSSmatrix)
+```
+
+
+
+Subset the data frame including only first and the last variable in the data set, save it as an R object file (.RData). Provide the R codes with outputs and explain everything that you do in this step. 
+
+```{r, include=TRUE, hold_position = TRUE}
+# Subset the first 10 observations, including all variables
+abaloneSStwo <- abaloneDS[c(1,4177), ]
+```
+
+```{r, include=TRUE, hold_position = TRUE}
+# Checking the SS pt. 1
+dplyr::tbl_df(abaloneSStwo)
+```
+
+```{r, include=TRUE, hold_position = TRUE}
+# Checking the SS pt. 2
+str(abaloneSStwo)
+```
+
+```{r, include=TRUE, hold_position = TRUE}
+# Convert SS to a matrix
+saveRDS(abaloneSStwo, "abalonePT2.rds")
+```
+
