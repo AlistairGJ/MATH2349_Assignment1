@@ -132,67 +132,67 @@ test <- str_detect(abaloneDSDesc, "Attribute")
 which(test == TRUE)
 ```
 
-```{r}
+```{r, include=TRUE}
 # Substring
 str_view(abaloneDSDesc[78:109], "Attribute")
 str_view(abaloneDSDesc[86:98], "Attribute")
 ```
 
-```{r}
+```{r, include=TRUE}
 # We know from dim, have 9 attributes
 AbaloneHeader = c("Sex", "Length", "Diameter",
                   "Height", "WholeWeight", "ShuckedWeight",
                   "VisceraWeight", "ShellWeight", "Rings")
 ```
 
-```{r}
+```{r, include=TRUE}
 colnames(abaloneDS) <- AbaloneHeader
 ```
 
-```{r}
+```{r, include=TRUE}
 # Checking the first 5 instances (abaloneDS header also displayed)
 head(abaloneDS, n = 5)
 ```
 
-```{r}
+```{r, include=TRUE}
 # Checking the Data Types
 str(abaloneDS)
 ```
 
-```{r}
+```{r, include=TRUE}
 # Turn Sex into a factor rather than Char
 abaloneDS$Sex <- factor(abaloneDS$Sex)
 ```
 
-```{r}
+```{r, include=TRUE}
 # Summary
 summary(abaloneDS)
 ```
 
 ## Note the above chunk - "Rings + 1.5 gives the age in years" - add this as a column
 
-```{r}
+```{r, include=TRUE}
 # Subset the first 10 observations, including all variables
 abaloneSS <- abaloneDS[1:10, ]
 ```
 
-```{r}
+```{r, include=TRUE}
 # Checking the SS pt. 1
 dplyr::tbl_df(abaloneSS)
 ```
 
-```{r}
+```{r, include=TRUE}
 # Checking the SS pt. 2
 str(abaloneSS)
 ```
 
-```{r}
+```{r, include=TRUE}
 # Convert SS to a matrix
 abaloneSSmatrix <- as.matrix(abaloneSS)
 ```
 
-```{r}
-# Convert SS to a matrix
+```{r, include=TRUE}
+# Checking the class
 class(abaloneSSmatrix)
 ```
 
