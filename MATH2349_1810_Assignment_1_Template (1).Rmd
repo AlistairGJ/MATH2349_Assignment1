@@ -99,11 +99,6 @@ dim(abaloneDS)
 * 4177 Instances
 * 9 Attributes
 
-```{r}
-# Useful?
-dplyr::tbl_df(abaloneDS)
-```
-
 ```{r, include=TRUE}
 # Creating a variable for the URL string
 abaloneDataDescURL <- 'https://archive.ics.uci.edu/ml/machine-learning-databases/abalone/abalone.names'
@@ -176,7 +171,30 @@ summary(abaloneDS)
 
 ## Note the above chunk - "Rings + 1.5 gives the age in years" - add this as a column
 
+```{r}
+# Subset the first 10 observations, including all variables
+abaloneSS <- abaloneDS[1:10, ]
+```
 
+```{r}
+# Checking the SS pt. 1
+dplyr::tbl_df(abaloneSS)
+```
+
+```{r}
+# Checking the SS pt. 2
+str(abaloneSS)
+```
+
+```{r}
+# Convert SS to a matrix
+abaloneSSmatrix <- as.matrix(abaloneSS)
+```
+
+```{r}
+# Convert SS to a matrix
+class(abaloneSSmatrix)
+```
 
 Explain everything that you do in this step using regular text outside the R chunks. You may use bulleted lists like this:
 
